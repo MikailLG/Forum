@@ -11,17 +11,15 @@ func main() {
 	contexteBDD := database.InitialiserBDD()    
 	defer contexteBDD.Close()
 	repoUtilisateur := SQL.InitialiserUtilisateurRepository(contexteBDD)
-	nouveauSupporter := SQL.Utilisateur{
-		Pseudo:          "Zizou10",
-		Email:           "zidane@foot.fr",
-		MotDePasseHache: "un_super_hash_sha512_ici",
-		ClubDeCoeur:     "Real Madrid",
-		IDRole:          1,
-	}
-	id, err := repoUtilisateur.CreerUtilisateur(nouveauSupporter)
+	fmt.Println("--- Tentative de Connexion de l'Utilisateur ---")
+	pseudoConnexion := "Mbappe2026"
+	motDePasseSaisi := "AllezLeFoot2026!"
+	utilisateurConnecte, err := repoUtilisateur.VerifierConnexion(pseudoConnexion, motDePasseSaisi)
 	if err != nil {
-		log.Printf("Inscription Échoué : %v", err)
-		return
+		log.Fatalf("Échec de la connexion : %v", err)
 	}
-	fmt.Printf("Inscription Réussi ! Utilisateur créé avec l'ID : %d\n", id)
+	fmt.Printf("Authentification réussie pour : %s (Rôle ID : %d)\n", utilisateurConnecte.Pseudo, utilisateurConnecte.IDRole)
+	token := SQL.GenererTokenSession(utilisateurConnecte)	
+	fmt.Println("\n--- Clé de Session Générée ---")
+	fmt.Printf("Token de session : %s\n", token)
 }
