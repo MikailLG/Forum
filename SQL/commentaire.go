@@ -23,7 +23,7 @@ func InitialiserCommentaireRepository(db *sql.DB) *CommentaireRepository {
 }
 
 func (r *CommentaireRepository) CreerCommentaire(c Commentaire) (int, error) {
-	requete := "INSERT INTO COMMENTAIRES (contenu, id_utilisateur, id_discussion) VALUES (?, ?, ?);"
+	requete := "INSERT INTO MESSAGES (contenu, id_utilisateur, id_discussion) VALUES (?, ?, ?);"
 	resultatSQL, erreurSQL := r.db.Exec(requete, c.Contenu, c.IDUtilisateur, c.IDDiscussion)
 	if erreurSQL != nil {
 		return -1, fmt.Errorf("erreur lors de l'ajout du commentaire : %w", erreurSQL)

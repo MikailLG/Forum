@@ -46,7 +46,7 @@ func ValiderMotDePasse(mdp string) error {
 		return fmt.Errorf("le mot de passe doit contenir au moins une lettre majuscule")
 	}
 	if !aUnCarSpecial {
-		return fmt.Errorf("le mot de passe doit contenir au moins un caractère spécial (ex: !, @, #, $, etc.)")
+		return fmt.Errorf("le mot de passe doit contenir au moins un caractère spécial")
 	}
 	return nil
 }
