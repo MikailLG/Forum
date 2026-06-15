@@ -18,6 +18,8 @@ func main() {
 	serviceForum := services.InitialiserForumService(repoDiscu, repoComm)
 	ctrlForum := controleurs.InitialiserForumControleur(serviceForum)
 	routeurs.ConfigurerRoutesForum(ctrlForum)
-	log.Println("FootConnect lancé sur http://localhost:8080/forum/accueil")
+	ctrlAuth := controleurs.InitialiserAuthentificationControleur()
+	routeurs.ConfigurerRoutesAuthentification(ctrlAuth)
+	log.Println("Serveur en ligne : http://localhost:8080/forum/accueil")
 	http.ListenAndServe(":8080", nil)
 }

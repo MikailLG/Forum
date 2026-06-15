@@ -1,37 +1,30 @@
 {{define "content"}}
-<h2>Flux du Forum</h2>
+<h2>Forum</h2>
 
-<div>
-    <span>Filtrer par :</span>
-    <a href="/forum/accueil?tri=chrono"> Récent</a> | 
-    <a href="/forum/accueil?tri=popularite"> Populaire</a>
-</div>
-<br>
+<form action="/forum/accueil" method="GET">
+    <input type="text" name="q" placeholder="Rechercher...">
+    <button type="submit">OK</button>
+</form>
 
-<fieldset>
-    <legend>Lancer une nouvelle discussion</legend>
-    <form action="/forum/discussion/creer" method="POST">
-        <div>
-            <label>Titre du débat :</label>
-            <input type="text" name="titre" required>
-        </div>
-        <div>
-            <label>Votre argumentaire :</label>
-            <textarea name="contenu" required></textarea>
-        </div>
-        <button type="submit">Publier le sujet</button>
-    </form>
-</fieldset>
+<form action="/forum/discussion/creer" method="POST">
+    <h3>Créer un sujet</h3>
+    <input type="text" name="titre" placeholder="Titre" required><br>
+    <textarea name="contenu" placeholder="Message" required></textarea><br>
+    <button type="submit">Publier</button>
+</form>
 
-<h3>Sujets en cours</h3>
+<h3>Sujets</h3>
 {{range .Discussions}}
-<div style="border: 1px solid #000; padding: 10px; margin-bottom: 10px;">
-    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a></h4>
+<div style="border: 1px solid black; margin: 5px 0; padding: 5px;">
+    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a> (Score: {{.ScorePopularite}})</h4>
     <p>{{.Contenu}}</p>
-    <small>Statut : {{.Etat}} | Score de popularité : <strong>{{.ScorePopularite}}</strong></small>
 </div>
 {{else}}
-<p>Aucun débat de football lancé pour le moment.</p>
+<p>Aucun sujet.</p>
 {{end}}
 
+<p>
+    <a href="/forum/accueil?page=1">Précédent</a> | 
+    <a href="/forum/accueil?page=2">Suivant</a>
+</p>
 {{end}}
