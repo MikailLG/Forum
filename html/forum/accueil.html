@@ -1,0 +1,37 @@
+{{define "content"}}
+<h2>Flux du Forum</h2>
+
+<div>
+    <span>Filtrer par :</span>
+    <a href="/forum/accueil?tri=chrono"> Récent</a> | 
+    <a href="/forum/accueil?tri=popularite"> Populaire</a>
+</div>
+<br>
+
+<fieldset>
+    <legend>Lancer une nouvelle discussion</legend>
+    <form action="/forum/discussion/creer" method="POST">
+        <div>
+            <label>Titre du débat :</label>
+            <input type="text" name="titre" required>
+        </div>
+        <div>
+            <label>Votre argumentaire :</label>
+            <textarea name="contenu" required></textarea>
+        </div>
+        <button type="submit">Publier le sujet</button>
+    </form>
+</fieldset>
+
+<h3>Sujets en cours</h3>
+{{range .Discussions}}
+<div style="border: 1px solid #000; padding: 10px; margin-bottom: 10px;">
+    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a></h4>
+    <p>{{.Contenu}}</p>
+    <small>Statut : {{.Etat}} | Score de popularité : <strong>{{.ScorePopularite}}</strong></small>
+</div>
+{{else}}
+<p>Aucun débat de football lancé pour le moment.</p>
+{{end}}
+
+{{end}}

@@ -1,0 +1,36 @@
+{{define "content"}}
+<h2>Sujet : {{.Discussion.Titre}}</h2>
+<p>{{.Discussion.Contenu}}</p>
+<small>Statut de la discussion : {{.Discussion.Etat}}</small>
+
+<div style="margin: 15px 0;">
+    <form action="/forum/vote" method="POST" style="display:inline;">
+        <input type="hidden" name="id_message" value="{{.Discussion.ID}}">
+        <input type="hidden" name="type_reaction" value="like">
+        <button type="submit">👍 J'aime</button>
+    </form>
+
+    <form action="/forum/vote" method="POST" style="display:inline;">
+        <input type="hidden" name="id_message" value="{{.Discussion.ID}}">
+        <input type="hidden" name="type_reaction" value="dislike">
+        <button type="submit">👎 Je n'aime pas</button>
+    </form>
+</div>
+<hr>
+
+<h3>Commentaires</h3>
+{{range .Commentaires}}
+<div style="background-color: #f0f0f0; padding: 8px; margin-bottom: 8px; border-left: 4px solid #000;">
+    <p>{{.Contenu}}</p>
+</div>
+{{else}}
+<p>Aucune réponse pour le moment. Donnez votre avis !</p>
+{{end}}
+
+<form action="/forum/commentaire/creer" method="POST" style="margin-top: 15px;">
+    <input type="hidden" name="id_discussion" value="{{.Discussion.ID}}">
+    <label>Ajouter un commentaire :</label><br>
+    <textarea name="contenu" required style="width: 100%; max-width: 400px;"></textarea><br>
+    <button type="submit">Envoyer</button>
+</form>
+{{end}}

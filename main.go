@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"footconnect/SQL"
+	"footconnect/controleurs"
 	"footconnect/database"
+	"footconnect/routeurs"
+	"footconnect/services"
 	"log"
 	"net/http"
 )
@@ -11,18 +13,11 @@ import (
 func main() {
 	contexteBDD := database.InitialiserBDD()
 	defer contexteBDD.Close()
-	repoUser := SQL.InitialiserUtilisateurRepository(contexteBDD)
 	repoDiscu := SQL.InitialiserDiscussionRepository(contexteBDD)
 	repoComm := SQL.InitialiserCommentaireRepository(contexteBDD)
-	_, _, _ = repoUser, repoDiscu, repoComm
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprint(w, "<h2>Serveur FootConnect opérationnel !")
-	})
-	port := ":8080"
-	log.Printf("Le serveur FootConnect a démarré sur l'adresse http://localhost%s\n", port)
-	erreurServeur := http.ListenAndServe(port, nil)
-	if erreurServeur != nil {
-		log.Fatalf("Échec du lancement du serveur HTTP : %v", erreurServeur)
-	}
+	serviceForum := services.InitialiserForumService(repoDiscu, repoComm)
+	ctrlForum := controleurs.InitialiserForumControleur(serviceForum)
+	routeurs.ConfigurerRoutesForum(ctrlForum)
+	log.Println("FootConnect lancé sur http://localhost:8080/forum/accueil")
+	http.ListenAndServe(":8080", nil)
 }

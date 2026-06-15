@@ -82,36 +82,40 @@ func (r *DiscussionRepository) Voter(idUtilisateur int, idDiscussion int, typeRe
     return nil
 }
 
-func (r *DiscussionRepository) RecupererDiscussions(triCritere string) ([]DiscussionAffichee, error) {
-    var requete string
-    if triCritere == "popularite" {
-        requete = `SELECT d.id_discussion, d.titre, d.contenu, d.statut, d.id_utilisateur, d.id_categorie,
-                   (COUNT(CASE WHEN re.type_reaction = 'like' THEN 1 END) - COUNT(CASE WHEN re.type_reaction = 'dislike' THEN 1 END)) AS score
-                   FROM DISCUSSIONS d
-                   LEFT JOIN REACTIONS re ON d.id_discussion = re.id_message
-                   WHERE d.statut != 'archivé'
-                   GROUP BY d.id_discussion
-                   ORDER BY score DESC;`
-    } else {
-        requete = `SELECT d.id_discussion, d.titre, d.contenu, d.statut, d.id_utilisateur, d.id_categorie,
-                   (COUNT(CASE WHEN re.type_reaction = 'like' THEN 1 END) - COUNT(CASE WHEN re.type_reaction = 'dislike' THEN 1 END)) AS score
-                   FROM DISCUSSIONS d
-                   LEFT JOIN REACTIONS re ON d.id_discussion = re.id_message
-                   WHERE d.statut != 'archivé'
-                   GROUP BY d.id_discussion
-                   ORDER BY d.id_discussion DESC;`
-    }
-    lignes, err := r.db.Query(requete)
-    if err != nil {
-        return nil, fmt.Errorf("erreur recuperation des discussions : %w", err)
-    }
-    defer lignes.Close()
-    var liste []DiscussionAffichee
-    for lignes.Next() {
-        var d DiscussionAffichee
-        errScan := lignes.Scan(&d.ID, &d.Titre, &d.Contenu, &d.Etat, &d.IDUtilisateur, &d.IDCategorie, &d.ScorePopularite)
-        if errScan != nil {
-			return nil, fmt.Errorf("erreur scan discussion : %w", errScan)
+func (r *DiscussionRepository) RecupererDiscussions(triCritere string, limite int, offset int, recherche string, idCategorie int) ([]DiscussionAffichee, error) {
+	requete := `SELECT d.id_discussion, d.titre, d.contenu, d.statut, d.id_utilisateur, d.id_categorie,
+               (COUNT(CASE WHEN re.type_reaction = 'like' THEN 1 END) - COUNT(CASE WHEN re.type_reaction = 'dislike' THEN 1 END)) AS score
+               FROM DISCUSSIONS d
+               LEFT JOIN REACTIONS re ON d.id_discussion = re.id_message
+               WHERE d.statut != 'archivé'`
+	var args []interface{}
+	if recherche != "" {
+		requete += " AND d.titre LIKE ?"
+		args = append(args, "%"+recherche+"%")
+	}
+	if idCategorie > 0 {
+		requete += " AND d.id_categorie = ?"
+		args = append(args, idCategorie)
+	}
+	requete += " GROUP BY d.id_discussion"
+	if triCritere == "popularite" {
+		requete += " ORDER BY score DESC"
+	} else {
+		requete += " ORDER BY d.id_discussion DESC"
+	}
+	requete += " LIMIT ? OFFSET ?;"
+	args = append(args, limite, offset)
+	lignes, err := r.db.Query(requete, args...)
+	if err != nil {
+		return nil, fmt.Errorf("erreur filtrage des discussions : %w", err)
+	}
+	defer lignes.Close()
+	var liste []DiscussionAffichee
+	for lignes.Next() {
+		var d DiscussionAffichee
+		errScan := lignes.Scan(&d.ID, &d.Titre, &d.Contenu, &d.Etat, &d.IDUtilisateur, &d.IDCategorie, &d.ScorePopularite)
+		if errScan != nil {
+			return nil, fmt.Errorf("erreur scan : %w", errScan)
 		}
 		liste = append(liste, d)
 	}
