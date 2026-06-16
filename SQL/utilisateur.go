@@ -81,26 +81,25 @@ func (r *UtilisateurRepository) CreerUtilisateur(u Utilisateur, mdpBrut string) 
 	return int(idGenere), nil
 }
 
-func (r *UtilisateurRepository) VerifierConnexion(pseudo string, mdpSoumis string) (*Utilisateur, error) {
-	requete := "SELECT id_utilisateur, pseudo, email, mot_de_passe_hache, club_de_coeur, est_banni, id_role FROM UTILISATEURS WHERE pseudo = ?;"
-	ligne := r.db.QueryRow(requete, pseudo)
-
-	var u Utilisateur
-	erreurScan := ligne.Scan(&u.ID, &u.Pseudo, &u.Email, &u.MotDePasseHache, &u.ClubDeCoeur, &u.EstBanni, &u.IDRole)
-	if erreurScan != nil {
-		if errors.Is(erreurScan, sql.ErrNoRows) {
-			return nil, fmt.Errorf("pseudo ou mot de passe incorrect")
-		}
-		return nil, fmt.Errorf("erreur lors de la requete de connexion : %w", erreurScan)
-	}
-	if u.EstBanni {
-		return nil, fmt.Errorf("ce compte a été banni de la plateforme")
-	}
-	hashSoumis := HacherEnSHA512(mdpSoumis)
-	if hashSoumis != u.MotDePasseHache {
-		return nil, fmt.Errorf("pseudo ou mot de passe incorrect")
-	}
-	return &u, nil
+func (r *UtilisateurRepository) VerifierConnexion(email string, mdpSoumis string) (*Utilisateur, error) {
+    requete := "SELECT id_utilisateur, pseudo, email, mot_de_passe_hache, club_de_coeur, est_banni, id_role FROM UTILISATEURS WHERE email = ?;"
+    ligne := r.db.QueryRow(requete, email)
+    var u Utilisateur
+    erreurScan := ligne.Scan(&u.ID, &u.Pseudo, &u.Email, &u.MotDePasseHache, &u.ClubDeCoeur, &u.EstBanni, &u.IDRole)
+    if erreurScan != nil {
+        if errors.Is(erreurScan, sql.ErrNoRows) {
+            return nil, fmt.Errorf("email ou mot de passe incorrect")
+        }
+        return nil, fmt.Errorf("erreur lors de la requete de connexion : %w", erreurScan)
+    }
+    if u.EstBanni {
+        return nil, fmt.Errorf("ce compte a été banni de la plateforme")
+    }
+    hashSoumis := HacherEnSHA512(mdpSoumis)
+    if hashSoumis != u.MotDePasseHache {
+        return nil, fmt.Errorf("email ou mot de passe incorrect")
+    }
+    return &u, nil
 }
 
 func GenererTokenSession(u *Utilisateur) string {

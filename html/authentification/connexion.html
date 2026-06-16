@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<p><a href="/forum/accueil">Retour à l'accueil</a></p>
 <h1>FootConnect</h1>
-
+{{if .Erreur}}
+    <p>{{.Erreur}}</p>
+{{end}}
 <form action="/connexion" method="POST">
-
-    <p>Email : <input type="email" name="email"></p>
-    <p>Mot de passe : <input type="password" name="mot_de_passe"></p>
-
+    <p>Email : <input type="email" name="email" required></p>
+    <p>Mot de passe : <input type="password" name="not_de_passe" required></p>
     <button type="submit">Se connecter</button>
-
 </form>
-
-<p><a href="inscription.html">S'inscrire</a></p>
-
+<p><a href="/authentification/inscription">S'inscrire</a></p>
 </body>
 </html>
