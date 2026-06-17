@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord - Admin</title>
+</head>
+<body>
+
+<p><a href="/forum/accueil">⬅Retour au Forum</a></p>
+
+<h1>Panel Administration - FootConnect</h1>
+<p>Bienvenue dans votre espace de modération sécurisé.</p>
+
+<hr>
+
+<h2>Bannir un membre de la communauté</h2>
+<form action="/admin/bannir" method="POST">
+    <p>Entrez le pseudo exact du joueur à bannir :</p>
+    <p><input type="text" name="pseudo_a_bannir" required placeholder="Ex: Zizou"></p>
+    <button type="submit">Appliquer le bannissement définitif</button>
+</form>
+
+</body>
+</html>

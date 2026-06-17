@@ -21,6 +21,9 @@ func main() {
 	repoUser := SQL.InitialiserUtilisateurRepository(contexteBDD) 
 	ctrlAuth := controleurs.InitialiserAuthentificationControleur(repoUser)
 	routeurs.ConfigurerRoutesAuthentification(ctrlAuth)
+	ctrlAdmin := controleurs.InitialiserAdministrationControleur(repoUser)
+	http.HandleFunc("/admin/dashboard", ctrlAdmin.AfficherTableauDeBord)
+	http.HandleFunc("/admin/bannir", ctrlAdmin.BannirUtilisateur)
 	log.Println("Serveur en ligne : http://localhost:8080/forum/accueil")
 	http.ListenAndServe(":8080", nil)
 }

@@ -1,30 +1,44 @@
 {{define "content"}}
+<p><strong>Espace Staff :</strong> <a href="/admin/dashboard">Accéder à l'onglet Modération</a></p>
+<hr>
+
 <h2>Forum</h2>
 
 <form action="/forum/accueil" method="GET">
-    <input type="text" name="q" placeholder="Rechercher...">
+    <input type="text" name="q" placeholder="Rechercher un sujet...">
     <button type="submit">OK</button>
 </form>
 
 <form action="/forum/discussion/creer" method="POST">
     <h3>Créer un sujet</h3>
-    <input type="text" name="titre" placeholder="Titre" required><br>
-    <textarea name="contenu" placeholder="Message" required></textarea><br>
+    <input type="text" name="titre" placeholder="Titre du sujet" required><br>
+    <textarea name="contenu" placeholder="Écrivez votre message ici..." required></textarea><br>
     <button type="submit">Publier</button>
 </form>
 
 <h3>Sujets</h3>
 {{range .Discussions}}
-<div style="border: 1px solid black; margin: 5px 0; padding: 5px;">
-    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a> (Score: {{.ScorePopularite}})</h4>
+<div>
+    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a> (Score de popularité : {{.ScorePopularite}})</h4>
     <p>{{.Contenu}}</p>
+    <p>
+        <a href="/forum/vote?id={{.ID}}&type=like">👍 Like</a>
+        <a href="/forum/vote?id={{.ID}}&type=dislike">👎 Dislike</a>
+    </p>
+    {{if $.EstAdmin}}
+    <p>
+        <a href="/forum/accueil?action=supprimer&id={{.ID}}" 
+           onclick="return confirm('ATTENTION : Confirmez-vous la suppression définitive de ce sujet ? Cela effacera instantanément toutes les réactions et les messages associés.');">
+           supprimer le sujet
+        </a>
+    </p>
+    {{end}}
 </div>
 {{else}}
-<p>Aucun sujet.</p>
+<p>Aucun sujet disponible pour le moment.</p>
 {{end}}
-
 <p>
-    <a href="/forum/accueil?page=1">Précédent</a> | 
-    <a href="/forum/accueil?page=2">Suivant</a>
+    <a href="/forum/accueil?page=1">Page Précédente</a> | 
+    <a href="/forum/accueil?page=2">Page Suivante</a>
 </p>
 {{end}}

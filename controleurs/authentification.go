@@ -26,7 +26,6 @@ func (c *AuthentificationControleur) AfficherInscription(w http.ResponseWriter, 
 }
 
 func (c *AuthentificationControleur) SeConnecter(w http.ResponseWriter, r *http.Request) {
-	// On récupère désormais l'email du formulaire
 	email := r.FormValue("email") 
 	motDePasse := r.FormValue("not_de_passe")
 	u, err := c.RepoUser.VerifierConnexion(email, motDePasse)
@@ -37,7 +36,20 @@ func (c *AuthentificationControleur) SeConnecter(w http.ResponseWriter, r *http.
 		tmpl.Execute(w, data)
 		return
 	}
-	log.Println("Connexion réussie pour l'utilisateur :", u.Pseudo, "(", u.Email, ")")
+	token := SQL.GenererTokenSession(u)
+	cookie := &http.Cookie{
+		Name:  "session_token",
+		Value: token,
+		Path:  "/",
+	}
+	http.SetCookie(w, cookie)
+		cookiePseudo := &http.Cookie{
+		Name:  "pseudo",
+		Value: u.Pseudo,
+		Path:  "/",
+	}
+	http.SetCookie(w, cookiePseudo)
+	log.Println("Session et cookie pseudo créés pour :", u.Pseudo)
 	http.Redirect(w, r, "/forum/accueil", http.StatusSeeOther)
 }
 
