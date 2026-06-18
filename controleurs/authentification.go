@@ -61,7 +61,7 @@ func (c *AuthentificationControleur) SeConnecter(w http.ResponseWriter, r *http.
 		Value: u.Pseudo,
 		Path:  "/",
 	})
-	log.Println("Session et cookie créés pour le joueur :", u.Pseudo)
+	log.Println("Session et cookie créés pour l'utilisateur :", u.Pseudo)
 	http.Redirect(w, r, "/forum/accueil", http.StatusSeeOther)
 }
 
@@ -88,6 +88,6 @@ func (c *AuthentificationControleur) SInscrire(w http.ResponseWriter, r *http.Re
 		tmpl.Execute(w, data)
 		return
 	}
-	log.Println("Nouveau joueur inscrit sur FootConnect :", pseudo)
+	log.Println("Nouveau utilisateur inscrit sur FootConnect :", pseudo)
 	http.Redirect(w, r, "/authentification/connexion", http.StatusSeeOther)
 }
