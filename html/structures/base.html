@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>FootConnect</title>
+    <link rel="stylesheet" href="/web/css/style.css">
 </head>
 <body>
-    <nav>
-        <a href="/forum/accueil">Accueil</a> | 
-        <a href="/authentification/connexion">Connexion</a> | 
-        <a href="/authentification/inscription">Inscription</a>
-    </nav>
-    <hr>
-    {{template "content" .}}
+    <div class="container">
+        <nav class="main-nav">
+            <a href="/forum/accueil" class="nav-link">Accueil</a>
+            <a href="/authentification/connexion" class="nav-link">Connexion</a>
+            <a href="/authentification/inscription" class="nav-link">Inscription</a>
+        </nav>
+
+        <main class="main-content">
+            {{template "content" .}}
+        </main>
+    </div>
 </body>
 </html>

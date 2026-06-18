@@ -1,28 +1,206 @@
+:root {
+    --vert-pelouse: #2e7d32;
+    --vert-clair: #41a947;
+    --fond-stade: #f4f7f4;
+    --texte-sombre: #1a231a;
+    --blanc: #ffffff;
+    --gris-bordure: #e0e4e0;
+    --rouge-carton: #d32f2f;
+    --jaune-carte: #fbc02d;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 50px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--fond-stade);
+    color: var(--texte-sombre);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
 }
 
-h1 {
-    color: green;
+a {
+    color: var(--vert-pelouse);
+    text-decoration: none;
+    font-weight: bold;
 }
 
-input {
-    padding: 5px;
-    width: 250px;
-    height: 30px;
+a:hover {
+    color: var(--vert-clair);
+    text-decoration: underline;
+}
+
+.main-nav {
+    display: flex;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 2px solid var(--gris-bordure);
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--texte-sombre);
+}
+
+.live-link {
+    color: var(--rouge-carton);
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--blanc);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 6px solid var(--vert-pelouse);
+}
+
+.auth-box {
+    max-width: 450px;
+    margin: 40px auto;
+    padding: 30px;
+    background: var(--blanc);
+    border: 1px solid var(--gris-bordure);
+    border-radius: 8px;
+    border-top: 4px solid var(--vert-pelouse);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+h1, h2, h3 {
+    color: var(--vert-pelouse);
+    border-bottom: 2px solid var(--gris-bordure);
+    padding-bottom: 8px;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0 0 0;
+    border: 2px solid var(--gris-bordure);
+    border-radius: 6px;
     box-sizing: border-box;
+    font-size: 14px;
+    background-color: #fafafa;
 }
 
-button {
-    padding: 8px 15px;
-    background-color: green;
+input[type="number"] {
+    max-width: 120px;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--vert-pelouse);
+    background-color: var(--blanc);
+    outline: none;
+}
+
+button, input[type="submit"], .btn {
+    background-color: var(--vert-pelouse);
+    color: var(--blanc);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    transition: background 0.2s ease;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: var(--vert-clair);
+}
+
+.subject-card, .comment-card {
+    background: var(--blanc);
+    border: 1px solid var(--gris-bordure);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--vert-pelouse);
+}
+
+.highlighted-card {
+    background-color: #fafdfa;
+}
+
+.comment-date {
+    text-align: right;
+    margin: 0;
+    color: gray;
+}
+
+.error-box {
+    background-color: #ffebee;
+    color: var(--rouge-carton);
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid var(--rouge-carton);
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.btn-delete {
+    color: var(--rouge-carton) !important;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--blanc);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--gris-bordure);
+}
+
+th {
+    background-color: var(--vert-pelouse);
+    color: var(--blanc);
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: 600;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--gris-bordure);
+    color: #333;
+}
+
+tr:hover {
+    background-color: #f9fbf9;
+}
+
+.btn-ban {
+    background-color: var(--rouge-carton);
     color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
     border: none;
     cursor: pointer;
 }
 
-label {
-    display: inline-block;
-    width: 150px;
+.btn-ban:hover {
+    background-color: #b71c1c;
+    color: white;
 }

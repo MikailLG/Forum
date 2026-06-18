@@ -15,5 +15,15 @@ func (s *ForumService) FiltrerLesDiscussions(tri string, limite, offset int, rec
 	if limite != 10 && limite != 20 && limite != 30 {
 		limite = 10
 	}
+	if offset < 0 {
+		offset = 0
+	}
+	if catID < 0 {
+		catID = 0
+	}
 	return s.RepoDiscu.RecupererDiscussions(tri, limite, offset, recherche, catID)
+}
+
+func (s *ForumService) ObtenirCommentairesDunSujet(idDiscussion int) ([]SQL.CommentaireAffiche, error) {
+	return s.RepoComm.RecupererCommentairesParSujet(idDiscussion)
 }

@@ -1,35 +1,53 @@
 {{define "content"}}
-<p><strong>Espace Staff :</strong> <a href="/admin/dashboard">Accéder à l'onglet Modération</a></p>
+<p class="staff-link">
+    <strong>Espace Staff :</strong> 
+    <a href="/admin/dashboard">Accéder à l'onglet Modération</a>
+</p>
 <hr>
 
 <h2>Forum</h2>
 
-<form action="/forum/accueil" method="GET">
+<form action="/forum/accueil" method="GET" class="search-form">
     <input type="text" name="q" placeholder="Rechercher un sujet...">
     <button type="submit">OK</button>
 </form>
 
-<form action="/forum/discussion/creer" method="POST">
-    <h3>Créer un sujet</h3>
-    <input type="text" name="titre" placeholder="Titre du sujet" required><br>
-    <textarea name="contenu" placeholder="Écrivez votre message ici..." required></textarea><br>
-    <button type="submit">Publier</button>
-</form>
+<div class="subject-card">
+    <form action="/forum/discussion/creer" method="POST" class="create-topic-form">
+        <h3>Créer un sujet</h3>
+        
+        <div class="form-group">
+            <input type="text" name="titre" placeholder="Titre du sujet" required>
+        </div>
+        
+        <div class="form-group">
+            <textarea name="contenu" placeholder="Écrivez votre message ici..." required></textarea>
+        </div>
+        
+        <button type="submit">Publier</button>
+    </form>
+</div>
 
 <h3>Sujets</h3>
+
 {{range .Discussions}}
-<div>
-    <h4><a href="/forum/fil?id={{.ID}}">{{.Titre}}</a> (Score de popularité : {{.ScorePopularite}})</h4>
+<div class="subject-card">
+    <h4>
+        <a href="/forum/fil?id={{.ID}}">{{.Titre}}</a> 
+        <span class="popularity-score">(Score de popularité : {{.ScorePopularite}})</span>
+    </h4>
     <p>{{.Contenu}}</p>
-    <p>
-        <a href="/forum/vote?id={{.ID}}&type=like">👍 Like</a>
+    
+    <p class="votes">
+        <a href="/forum/vote?id={{.ID}}&type=like">👍 Like</a> | 
         <a href="/forum/vote?id={{.ID}}&type=dislike">👎 Dislike</a>
     </p>
+    
     {{if $.EstAdmin}}
-    <p>
-        <a href="/forum/accueil?action=supprimer&id={{.ID}}" 
+    <p class="admin-actions">
+        <a href="/forum/discussion/supprimer?id={{.ID}}" class="btn-delete"
            onclick="return confirm('ATTENTION : Confirmez-vous la suppression définitive de ce sujet ? Cela effacera instantanément toutes les réactions et les messages associés.');">
-           supprimer le sujet
+            Supprimer le sujet
         </a>
     </p>
     {{end}}
@@ -37,8 +55,9 @@
 {{else}}
 <p>Aucun sujet disponible pour le moment.</p>
 {{end}}
-<p>
-    <a href="/forum/accueil?page=1">Page Précédente</a> | 
-    <a href="/forum/accueil?page=2">Page Suivante</a>
-</p>
+
+<div class="pagination">
+    <a href="/forum/accueil?page=1" class="btn">Page Précédente</a> | 
+    <a href="/forum/accueil?page=2" class="btn">Page Suivante</a>
+</div>
 {{end}}

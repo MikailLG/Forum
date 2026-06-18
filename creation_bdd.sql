@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS DISCUSSIONS (
     id_discussion INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(150) NOT NULL,
     contenu TEXT NOT NULL,
-    statut ENUM('ouvert', 'ferme', 'archive') DEFAULT 'ouvert',
+    statut ENUM('ouvert', 'fermé', 'archivé') DEFAULT 'ouvert',
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_utilisateur INT NOT NULL,
     id_categorie INT NOT NULL,
@@ -48,11 +48,15 @@ CREATE TABLE IF NOT EXISTS REACTIONS (
     id_reaction INT AUTO_INCREMENT PRIMARY KEY,
     type_reaction ENUM('like', 'dislike') NOT NULL, 
     id_utilisateur INT NOT NULL,
-    id_message INT NOT NULL,
+    id_message INT NOT NULL, 
     UNIQUE KEY unique_reaction_utilisateur (id_utilisateur, id_message), 
     FOREIGN KEY (id_utilisateur) REFERENCES UTILISATEURS(id_utilisateur) ON DELETE CASCADE,
-    FOREIGN KEY (id_message) REFERENCES MESSAGES(id_message) ON DELETE CASCADE 
+    FOREIGN KEY (id_message) REFERENCES DISCUSSIONS(id_discussion) ON DELETE CASCADE 
 );
 
 INSERT INTO ROLES (libelle) VALUES ('Supporter'), ('Administrateur');
+
 INSERT INTO CATEGORIES (nom_categorie) VALUES ('Ligue 1'), ('Ligue des Champions'), ('Mercato'), ('Coupe du Monde');
+
+INSERT IGNORE INTO UTILISATEURS (id_utilisateur, pseudo, email, mot_de_passe_hache, id_role) 
+VALUES (1, 'Testeur', 'test@footconnect.fr', '123456', 1);

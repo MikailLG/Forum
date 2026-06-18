@@ -1,13 +1,15 @@
 {{define "content"}}
-<p>
+<p class="back-link">
     <a href="/forum/accueil">Retour à l'accueil</a>
 </p>
 <hr>
 
-<div>
+<div class="subject-card highlighted-card">
     <h2>{{.Discussion.Titre}}</h2>
     <p>{{.Discussion.Contenu}}</p>
-    <p><small>Statut du sujet : {{.Discussion.Etat}}</small></p>
+    <p class="status-text">
+        <small>Statut du sujet : <strong>{{.Discussion.Etat}}</strong></small>
+    </p>
 </div>
 
 <hr>
@@ -15,9 +17,11 @@
 <h3>Commentaires</h3>
 
 {{range .Commentaires}}
-<div style="margin-bottom: 15px; padding: 10px; border-left: 3px solid #007BFF; background-color: #f9f9f9;">
+<div class="comment-card">
     <p><strong>{{.Auteur}} :</strong> {{.Contenu}}</p>
-    <p><small>Posté le {{.Date}}</small></p>
+    <p class="comment-date">
+        <small>Posté le {{.Date}}</small>
+    </p>
 </div>
 {{else}}
 <p>Pas de commentaire pour le moment. Soyez le premier à répondre !</p>
@@ -25,14 +29,16 @@
 
 <hr>
 
-<form action="/forum/commentaire/creer" method="POST">
-    <input type="hidden" name="id_discussion" value="{{.Discussion.ID}}">
+<div class="comment-card text-input-box">
+	<form action="/forum/commentaire/creer" method="POST">
+		<input type="hidden" name="id_discussion" value="{{.Discussion.ID}}">
 
-    <p>
-        <label for="contenu"><strong>Votre réponse :</strong></label><br>
-        <textarea id="contenu" name="contenu" rows="4" cols="50" placeholder="Écrivez votre commentaire ici..." required></textarea>
-    </p>
-    
-    <button type="submit">Répondre</button>
-</form>
+		<div class="form-group">
+			<label for="contenu"><strong>Votre réponse :</strong></label>
+			<textarea id="contenu" name="contenu" rows="4" placeholder="Écrivez votre commentaire ici..." required></textarea>
+		</div>
+		
+		<button type="submit">Répondre</button>
+	</form>
+</div>
 {{end}}

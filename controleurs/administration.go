@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -19,38 +20,45 @@ func InitialiserAdministrationControleur(ru *SQL.UtilisateurRepository) *Adminis
 func (c *AdministrationControleur) AfficherTableauDeBord(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
-		log.Println("Accès refusé : Aucun cookie trouvé.")
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("<p>Accès refusé : Vous devez être connecté et Administrateur pour voir cette page.</p><p><a href='/forum/accueil'>Retourner à l'accueil</a></p>"))
+		http.Error(w, "Accès interdit : connectez-vous.", http.StatusForbidden)
 		return
 	}
 	parties := strings.Split(cookie.Value, "_")
-	if len(parties) < 5 {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("<p><a href='/authentification/connexion'>Veuillez vous reconnecter</a></p>"))
+	if len(parties) < 2 {
+		http.Redirect(w, r, "/authentification/connexion", http.StatusSeeOther)
 		return
 	}
 	idRole := parties[len(parties)-1]
-	if idRole != "2" {
-		log.Println("Accès refusé : L'utilisateur n'est pas Administrateur.")
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("<p>Accès refusé : Vous devez être Administrateur du site FootConnect pour accéder au panneau de modération.</p><p><a href='/forum/accueil'>Retourner à l'accueil</a></p>"))
+	if idRole != "2" { 
+		http.Error(w, "Accès interdit : réservé au Staff.", http.StatusForbidden)
 		return
 	}
 	tmpl, errTemplate := template.ParseFiles("html/administration/tableau_de_bord.html")
 	if errTemplate != nil {
-		log.Println("Erreur : Impossible de charger le fichier HTML :", errTemplate)
-		http.Error(w, "Fichier HTML du tableau de bord introuvable. Vérifie le nom du fichier !", http.StatusInternalServerError)
+		log.Println("Erreur template admin:", errTemplate)
+		http.Error(w, "Erreur interne", http.StatusInternalServerError)
 		return
 	}
-	errExecute := tmpl.Execute(w, nil)
-	if errExecute != nil {
-		log.Println("Erreur lors du rendu du template :", errExecute)
-	}
+	tmpl.Execute(w, nil)
 }
 
 func (c *AdministrationControleur) BannirUtilisateur(w http.ResponseWriter, r *http.Request) {
-	pseudoDuBanni := r.FormValue("pseudo_a_bannir")
-	log.Println("L'administrateur a banni le joueur :", pseudoDuBanni)
+	if r.Method != http.MethodPost {
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
+		return
+	}
+	idStr := r.FormValue("id_a_supprimer") 
+	idDuBanni, err := strconv.Atoi(strings.TrimSpace(idStr))
+	if err != nil {
+		log.Println("Erreur conversion ID :", err)
+		http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
+		return
+	}
+	errSQL := c.RepoUser.SupprimerUtilisateur(idDuBanni)
+	if errSQL != nil {
+		log.Println("Erreur lors de la suppression de l'utilisateur", idDuBanni, ":", errSQL)
+	} else {
+		log.Println("Utilisateur supprimé avec succès. ID :", idDuBanni)
+	}
 	http.Redirect(w, r, "/admin/dashboard", http.StatusSeeOther)
 }

@@ -3,15 +3,13 @@ package SQL
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"time"
 )
 
 type Discussion struct {
 	ID            int
 	Titre         string
 	Contenu       string
-	DateCreation  time.Time
+	DateCreation  string
 	Etat          string
 	IDUtilisateur int
 	IDCategorie   int
@@ -31,12 +29,6 @@ type DiscussionAffichee struct {
 	ScorePopularite int
 }
 
-type Reaction struct {
-	IDUtilisateur int
-	IDDiscussion  int
-	TypeReaction  string
-}
-
 func InitialiserDiscussionRepository(db *sql.DB) *DiscussionRepository {
 	return &DiscussionRepository{db: db}
 }
@@ -46,14 +38,11 @@ func (r *DiscussionRepository) CreerDiscussion(d Discussion) (int, error) {
 		d.Etat = "ouvert"
 	}
 	requete := "INSERT INTO DISCUSSIONS (titre, contenu, statut, id_utilisateur, id_categorie) VALUES (?, ?, ?, ?, ?);"
-	resultatSQL, erreurSQL := r.db.Exec(requete, d.Titre, d.Contenu, d.Etat, d.IDUtilisateur, d.IDCategorie)
-	if erreurSQL != nil {
-		return -1, fmt.Errorf("erreur lors de la creation du sujet : %w", erreurSQL)
+	resultatSQL, err := r.db.Exec(requete, d.Titre, d.Contenu, d.Etat, d.IDUtilisateur, d.IDCategorie)
+	if err != nil {
+		return -1, fmt.Errorf("erreur lors de la creation du sujet : %w", err)
 	}
-	idGenere, erreurID := resultatSQL.LastInsertId()
-	if erreurID != nil {
-		return -1, fmt.Errorf("erreur recuperation ID sujet : %w", erreurID)
-	}
+	idGenere, _ := resultatSQL.LastInsertId()
 	return int(idGenere), nil
 }
 
@@ -63,32 +52,21 @@ func (r *DiscussionRepository) ModifierEtat(idDiscussion int, nouvelEtat string)
 	}
 	requete := "UPDATE DISCUSSIONS SET statut = ? WHERE id_discussion = ?;"
 	_, err := r.db.Exec(requete, nouvelEtat, idDiscussion)
-	if err != nil {
-		return fmt.Errorf("erreur modification etat sujet : %w", err)
-	}
-	return nil
+	return err
 }
 
 func (r *DiscussionRepository) Voter(idUtilisateur int, idDiscussion int, typeVote string) error {
-	_, _ = r.db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
 	requete := `
 		INSERT INTO REACTIONS (id_utilisateur, id_message, type_reaction) 
 		VALUES (?, ?, ?) 
 		ON DUPLICATE KEY UPDATE type_reaction = ?;`
-	
 	_, err := r.db.Exec(requete, idUtilisateur, idDiscussion, typeVote, typeVote)
-	_, _ = r.db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
-
-	if err != nil {
-		log.Println("Erreur lors de l'enregistrement du vote :", err)
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *DiscussionRepository) RecupererDiscussions(triCritere string, limite int, offset int, recherche string, idCategorie int) ([]DiscussionAffichee, error) {
 	requete := `SELECT d.id_discussion, d.titre, d.contenu, d.statut, d.id_utilisateur, d.id_categorie,
-               GREATEST((COUNT(CASE WHEN re.type_reaction = 'like' THEN 1 END) - COUNT(CASE WHEN re.type_reaction = 'dislike' THEN 1 END)), 0) AS score
+               COUNT(CASE WHEN re.type_reaction = 'like' THEN 1 END) AS score
                FROM DISCUSSIONS d
                LEFT JOIN REACTIONS re ON d.id_discussion = re.id_message
                WHERE d.statut != 'archivé'`
@@ -127,12 +105,8 @@ func (r *DiscussionRepository) RecupererDiscussions(triCritere string, limite in
 }
 
 func (r *DiscussionRepository) SupprimerDiscussionEnCascade(idDiscussion int) error {
-	_, _ = r.db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
 	_, _ = r.db.Exec("DELETE FROM REACTIONS WHERE id_message = ?;", idDiscussion)
-	_, _ = r.db.Exec("DELETE FROM COMMENTAIRES WHERE id_discussion = ?;", idDiscussion)
-	_, _ = r.db.Exec("DELETE FROM COMMENTAIRE WHERE id_discussion = ?;", idDiscussion)
-	_, _ = r.db.Exec("DELETE FROM MESSAGES WHERE id_discussion = ?;", idDiscussion)
+	_, _ = r.db.Exec("DELETE FROM MESSAGES WHERE id_discussion = ?;", idDiscussion)	
 	_, errFatal := r.db.Exec("DELETE FROM DISCUSSIONS WHERE id_discussion = ?;", idDiscussion)
-	_, _ = r.db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
 	return errFatal
 }

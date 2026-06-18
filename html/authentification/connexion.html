@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
+    <link rel="stylesheet" href="/web/css/style.css">
 </head>
 <body>
-<p><a href="/forum/accueil">Retour à l'accueil</a></p>
-<h1>FootConnect</h1>
-{{if .Erreur}}
-    <p>{{.Erreur}}</p>
-{{end}}
-<form action="/connexion" method="POST">
-    <p>Email : <input type="email" name="email" required></p>
-    <p>Mot de passe : <input type="password" name="not_de_passe" required></p>
-    <button type="submit">Se connecter</button>
-</form>
-<p><a href="/authentification/inscription">S'inscrire</a></p>
+<div class="auth-box">
+    <p><a href="/forum/accueil">Retour à l'accueil</a></p>
+    
+    <h1>FootConnect</h1>
+    
+    {{if .Erreur}}
+        <div class="error-box">{{.Erreur}}</div>
+    {{end}}
+    
+    <form action="/authentification/connexion" method="POST">
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="not_de_passe">Mot de passe :</label>
+            <input type="password" id="not_de_passe" name="not_de_passe" required>
+        </div>
+        
+        <button type="submit">Se connecter</button>
+    </form>
+    
+    <p><a href="/authentification/inscription">S'inscrire</a></p>
+</div>
 </body>
 </html>

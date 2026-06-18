@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
+    <link rel="stylesheet" href="/web/css/style.css">
 </head>
 <body>
-<p><a href="/forum/accueil">Retour à l'accueil</a></p>
-<h1>FootConnect</h1>
-{{if .Erreur}}
-    <p>{{.Erreur}}</p>
-{{end}}
-<form action="/inscription" method="POST">
-    <p>Pseudo : <input type="text" name="pseudo" required></p>
-    <p>Email : <input type="email" name="email" required></p>
-    <p>Mot de passe : <input type="password" name="not_de_passe" required></p>
-    <p>Club de coeur : <input type="text" name="club" required></p>
-    <button type="submit">S'inscrire</button>
-</form>
-<p>Déjà un compte ? <a href="/authentification/connexion">Se connecter</a></p>
+<div class="auth-box">
+    <p><a href="/forum/accueil">Retour à l'accueil</a></p>
+    
+    <h1>FootConnect</h1>
+    
+    {{if .Erreur}}
+        <div class="error-box">{{.Erreur}}</div>
+    {{end}}
+    
+    <form action="/authentification/inscription" method="POST">
+        <div class="form-group">
+            <label for="pseudo">Pseudo :</label>
+            <input type="text" id="pseudo" name="pseudo" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="not_de_passe">Mot de passe :</label>
+            <input type="password" id="not_de_passe" name="not_de_passe" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="club">Club de cœur :</label>
+            <input type="text" id="club" name="club" required>
+        </div>
+        
+        <button type="submit">S'inscrire</button>
+    </form>
+    
+    <p>Déjà un compte ? <a href="/authentification/connexion">Se connecter</a></p>
+</div>
 </body>
 </html>

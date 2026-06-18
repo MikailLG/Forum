@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Tableau de bord - Admin</title>
+    <link rel="stylesheet" href="/web/css/style.css">
 </head>
 <body>
+<div class="container">
+    <p><a href="/forum/accueil">Retour au Forum</a></p>
 
-<p><a href="/forum/accueil">⬅Retour au Forum</a></p>
+    <h1>Panel Administration - FootConnect</h1>
+    <p>Bienvenue dans votre espace de modération.</p>
 
-<h1>Panel Administration - FootConnect</h1>
-<p>Bienvenue dans votre espace de modération sécurisé.</p>
+    <hr>
 
-<hr>
-
-<h2>Bannir un membre de la communauté</h2>
-<form action="/admin/bannir" method="POST">
-    <p>Entrez le pseudo exact du joueur à bannir :</p>
-    <p><input type="text" name="pseudo_a_bannir" required placeholder="Ex: Zizou"></p>
-    <button type="submit">Appliquer le bannissement définitif</button>
-</form>
-
+    <h2>Bannir un membre de la communauté</h2>
+    <form action="/admin/bannir" method="POST">
+        <p>Entrez l'ID unique de l'utilisateur à exclure :</p>
+        <p>
+            <input type="number" name="id_a_supprimer" required placeholder="Ex: 4" min="1">
+        </p>
+        <button type="submit" class="btn-ban">Appliquer l'exclusion définitive</button>
+    </form>
+</div>
 </body>
 </html>
