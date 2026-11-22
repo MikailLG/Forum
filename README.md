@@ -62,3 +62,26 @@ L'organisation du travail de notre binôme a été entièrement structurée, dé
 ### 1. Configuration de la Base de Données
 1. go run main.go
 2. http://localhost:8080/forum/accueil
+
+
+
+## Déploiement Scalingo
+
+Application en ligne : https://forum-footconnect.osc-fr1.scalingo.io
+
+### Architecture
+* **App Web** : Serveur Go (`footconnect`) sur conteneur éphémère Scalingo Taille S (512 Mo RAM), HTTPS forcé, cookies sécurisés (`HttpOnly`, `Secure`, `SameSite=Lax`).
+* **Base de données** : Addon managé MySQL Starter 512.
+* **CI/CD** : GitHub Actions (`gofmt`, `go vet`, `go build`) avec Auto-Deploy sur `main`.
+
+### Variables d'environnement
+`DB_USER`, `DB_PWD`, `DB_HOST`, `DB_PORT`, `DB_NAME`, `JWT_SECRET`, `PORT`.
+
+### Procédure de déploiement
+```bash
+scalingo create forum-footconnect
+scalingo --app forum-footconnect addons-add mysql mysql-starter-512
+scalingo --app forum-footconnect env-set DB_USER="..." DB_PWD="..." DB_HOST="..." DB_PORT="..." DB_NAME="..." JWT_SECRET="..."
+grep -viE '^(CREATE DATABASE|USE )' creation_bdd.sql | scalingo --app forum-footconnect mysql-console
+git push scalingo main
+scalingo --app forum-footconnect force-https
