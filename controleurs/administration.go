@@ -29,7 +29,7 @@ func (c *AdministrationControleur) AfficherTableauDeBord(w http.ResponseWriter, 
 		return
 	}
 	idRole := parties[len(parties)-1]
-	if idRole != "2" { 
+	if idRole != "2" {
 		http.Error(w, "Accès interdit : réservé au Staff.", http.StatusForbidden)
 		return
 	}
@@ -47,7 +47,7 @@ func (c *AdministrationControleur) BannirUtilisateur(w http.ResponseWriter, r *h
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 		return
 	}
-	idStr := r.FormValue("id_a_supprimer") 
+	idStr := r.FormValue("id_a_supprimer")
 	idDuBanni, err := strconv.Atoi(strings.TrimSpace(idStr))
 	if err != nil {
 		log.Println("Erreur conversion ID :", err)

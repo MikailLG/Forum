@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"unicode"
 	"github.com/go-sql-driver/mysql"
+	"unicode"
 )
 
 type Utilisateur struct {

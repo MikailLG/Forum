@@ -106,7 +106,7 @@ func (r *DiscussionRepository) RecupererDiscussions(triCritere string, limite in
 
 func (r *DiscussionRepository) SupprimerDiscussionEnCascade(idDiscussion int) error {
 	_, _ = r.db.Exec("DELETE FROM REACTIONS WHERE id_message = ?;", idDiscussion)
-	_, _ = r.db.Exec("DELETE FROM MESSAGES WHERE id_discussion = ?;", idDiscussion)	
+	_, _ = r.db.Exec("DELETE FROM MESSAGES WHERE id_discussion = ?;", idDiscussion)
 	_, errFatal := r.db.Exec("DELETE FROM DISCUSSIONS WHERE id_discussion = ?;", idDiscussion)
 	return errFatal
 }

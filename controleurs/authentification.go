@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 )
 
 type AuthentificationControleur struct {
@@ -50,16 +51,25 @@ func (c *AuthentificationControleur) SeConnecter(w http.ResponseWriter, r *http.
 		tmpl.Execute(w, data)
 		return
 	}
+	estEnProd := os.Getenv("PORT") != ""
 	token := SQL.GenererTokenSession(u)
 	http.SetCookie(w, &http.Cookie{
-		Name:  "session_token",
-		Value: token,
-		Path:  "/",
+		Name:     "session_token",
+		Value:    token,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   estEnProd,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   3600 * 24,
 	})
 	http.SetCookie(w, &http.Cookie{
-		Name:  "pseudo",
-		Value: u.Pseudo,
-		Path:  "/",
+		Name:     "pseudo",
+		Value:    u.Pseudo,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   estEnProd,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   3600 * 24,
 	})
 	log.Println("Session et cookie créés pour l'utilisateur :", u.Pseudo)
 	http.Redirect(w, r, "/forum/accueil", http.StatusSeeOther)

@@ -200,7 +200,7 @@ func (c *ForumControleur) CreerCommentaire(w http.ResponseWriter, r *http.Reques
 	if contenu != "" && idDiscussion > 0 {
 		nouveauComm := SQL.Commentaire{
 			Contenu:       contenu,
-			IDDiscussion: idDiscussion,
+			IDDiscussion:  idDiscussion,
 			IDUtilisateur: idUtilisateur,
 			DateCreation:  time.Now().Format("2006-01-02 15:04:05"),
 		}
